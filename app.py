@@ -14,15 +14,16 @@ No_Data_Count = 0
 sum = 0
 
 db = dbms.dbInfo
-f = open("log.txt", "w+")
-f.close()
+# f = open("log.txt", "w+")
+# f.close()
 while True:
     try:
         f = open("log.txt", "a+")
+        f.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"\n")
         if No_Data_Count>10:
             break
         msg = f"{site}?serviceKey={key}&numOfRows={nOR}&pageNo={pageNo}&dataType={dataType}&CURRENT_DATE={CURRENT_DATE}&HOUR={HOUR}&COURSE_ID={COURSE_ID}"
-        f.write(msg+"\n")
+        # f.write(msg+"\n")
         response = requests.get(msg)
         response = response.json()['response']
         if response['header']['resultCode'] == '03':
@@ -44,7 +45,7 @@ while True:
                 # f.write(response.text+"\n")
                 response = response.json()['response']
             f.write(msg+"\n")
-            print(msg)
+            # print(msg)
             itemList = response['body']['items']['item']
             cursor = db.cursor(dbms.pymysql.cursors.DictCursor)
             # print(itemList)
@@ -64,8 +65,8 @@ while True:
             f.write(response.text+"\n")
             break
     except Exception as e:
-        print(e.text)
-        f.write(e.text)
+        print(e)
+        f.write(str(e))
     finally:
         COURSE_ID+=1
         f.close()
